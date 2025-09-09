@@ -1,14 +1,159 @@
-<!-- frontend/dashboard.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
   <title>Martial World - Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      display: flex;
+      background: linear-gradient(to bottom, #000000, #ffffff);
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .section {
+      flex: 1;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s ease;
+    }
+
+    .section::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
+
+    .section:last-child {
+      border-right: none;
+    }
+
+    .section:hover {
+      transform: scale(1.1);
+      z-index: 10;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+    }
+
+    .section-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      font-size: 1.8em;
+    }
+
+    p {
+      margin-bottom: 20px;
+      font-size: 1.1em;
+      max-width: 300px;
+    }
+
+    button {
+      padding: 14px 30px;
+      font-size: 1.2em;
+      font-family: 'Anton', sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 12px;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+
+    .track {
+      background-image: url('images/martial_track.png');
+    }
+
+    .connect {
+      background-image: url('images/martial_connect.png');
+    }
+
+    .mart {
+      background-image: url('images/martial_mart.png');
+    }
+
+    #mouse-light {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 100;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 40%);
+      transition: background-position 0.05s ease;
+    }
+  </style>
 </head>
 <body>
-  <h2>Welcome to Martial World</h2>
-  <p>Select your section:</p>
-  <button onclick="location.href='martial-track.html'">Martial Track</button>
-  <button onclick="location.href='martial-connect.html'">Martial Connect</button>
-  <button onclick="location.href='martial-mart.html'">Martial Mart</button>
+  <div class="section track">
+    <div class="section-content">
+      <h2>Martial Track</h2>
+      <p>Track your progress, training logs, and achievements here.</p>
+      <button onclick="location.href='martial-track.html'">Martial Track</button>
+    </div>
+  </div>
+
+  <div class="section connect">
+    <div class="section-content">
+      <h2>Martial Connect</h2>
+      <p>Connect with fellow martial artists, join forums, and share experiences.</p>
+      <button onclick="location.href='martial-connect.html'">Martial Connect</button>
+    </div>
+  </div>
+
+  <div class="section mart">
+    <div class="section-content">
+      <h2>Martial Mart</h2>
+      <p>Shop for gear, apparel, and training equipment tailored for martial arts.</p>
+      <button onclick="location.href='martial-mart.html'">Martial Mart</button>
+    </div>
+  </div>
+
+  <div id="mouse-light"></div>
+
+  <script>
+    const light = document.getElementById('mouse-light');
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      light.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15) 0%, transparent 40%)`;
+    });
+  </script>
 </body>
 </html>
