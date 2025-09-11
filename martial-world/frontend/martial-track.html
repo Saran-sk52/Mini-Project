@@ -3,26 +3,136 @@
 <head>
   <title>Martial Track</title>
   <link rel="stylesheet" href="assets/css/track.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.5s ease-in-out;
+      color: #fff;
+    }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #styleForm {
+      text-align: center;
+      margin: 20px;
+    }
+
+    #descriptionBox {
+      margin: 20px auto;
+      max-width: 800px;
+      background-color: rgba(36, 35, 35, 0.55); /* Slight transparency */
+      padding: 20px;
+      border-radius: 10px;
+      display: none;
+      backdrop-filter: blur(2px); /* Optional: adds a subtle blur behind */
+    }
+
+
+    #descriptionBox h3 {
+      margin-top: 0;
+    }
+
+    #nextLink {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #ff5722;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Martial Track</h2>
+  <div class="overlay">
+    <h2>Martial Track</h2>
 
-  <form id="syllabusForm">
-    <input type="text" id="style" placeholder="Martial Art Style" required />
-    <textarea id="syllabus" placeholder="Your syllabus..." required></textarea>
-    <button type="submit">Save Syllabus</button>
-  </form>
+    <form id="styleForm">
+      <label for="martialArt">Choose your martial art style:</label>
+      <select id="martialArt" required>
+        <option value="">-- Select Style --</option>
+        <option value="Kungfu">Kungfu</option>
+        <option value="Karate">Karate</option>
+        <option value="Taekwondo">Taekwondo</option>
+        <option value="Muay Thai">Muay Thai</option>
+        <option value="MMA">MMA</option>
+        <option value="Boxing">Boxing</option>
+        <option value="Kickboxing">Kickboxing</option>
+      </select>
+    </form>
 
-  <form id="dietForm">
-    <textarea id="diet" placeholder="Your diet plan..." required></textarea>
-    <button type="submit">Save Diet</button>
-  </form>
+    <div id="descriptionBox">
+      <h3 id="styleTitle"></h3>
+      <p id="styleDescription"></p>
+      <a id="nextLink" href="weekly.html">Start Weekly Training</a>
+    </div>
+  </div>
 
-  <form id="motivationForm">
-    <textarea id="motivation" placeholder="Your motivation..." required></textarea>
-    <button type="submit">Save Motivation</button>
-  </form>
+  <script>
+    const martialDescriptions = {
+      "Kungfu": {
+        text: "Kungfu is a traditional Chinese martial art known for its fluid movements, animal-inspired techniques, and deep philosophical roots. It emphasizes discipline, agility, and internal strength.",
+        image: "url('https://studycli.org/wp-content/uploads/2020/06/chinese-martial-arts.jpg')"
+      },
+      "Karate": {
+        text: "Karate is a Japanese martial art focused on striking techniques using punches, kicks, and open-hand strikes. It promotes mental discipline and physical conditioning.",
+        image: "url('https://visitokinawajapan.com/wp-content/uploads/2020/07/karate-main.jpg')"
+      },
+      "Taekwondo": {
+        text: "Taekwondo is a Korean martial art known for its high, fast kicks and dynamic footwork. It combines sport, self-defense, and philosophy.",
+        image: "url('https://northaustinmaf.com/wp-content/uploads/2021/05/taekwondo.jpg')"
+      },
+      "Muay Thai": {
+        text: "Muay Thai, the 'Art of Eight Limbs', uses fists, elbows, knees, and shins. Originating from Thailand, it's a powerful striking art with intense conditioning.",
+        image: "url('https://yokkao.com/cdn/shop/articles/muay-thai-most-powerful-martial-art.jpg')"
+      },
+      "MMA": {
+        text: "Mixed Martial Arts (MMA) blends techniques from various disciplines like boxing, wrestling, BJJ, and Muay Thai. It's a full-contact sport emphasizing versatility and adaptability.",
+        image: "url('https://evolve-vacation.com/wp-content/uploads/2020/07/mma-techniques.jpg')"
+      },
+      "Boxing": {
+        text: "Boxing is a combat sport focused on punches, footwork, and head movement. It builds endurance, timing, and precision.",
+        image: "url('https://evolve-mma.com/wp-content/uploads/2020/07/boxing-perfect-martial-art.jpg')"
+      },
+      "Kickboxing": {
+        text: "Kickboxing combines punches and kicks from boxing and karate. It's a high-intensity sport that improves cardio, strength, and coordination.",
+        image: "url('images/martial_track.png')"
+      }
+    };
 
-  <script src="assets/js/track.js"></script>
+    document.getElementById("martialArt").addEventListener("change", function () {
+      const selected = this.value;
+      const box = document.getElementById("descriptionBox");
+      const title = document.getElementById("styleTitle");
+      const desc = document.getElementById("styleDescription");
+
+      if (martialDescriptions[selected]) {
+        title.textContent = selected;
+        desc.textContent = martialDescriptions[selected].text;
+        document.body.style.backgroundImage = martialDescriptions[selected].image;
+        box.style.display = "block";
+      } else {
+        box.style.display = "none";
+        document.body.style.backgroundImage = "none";
+      }
+    });
+  </script>
 </body>
 </html>
