@@ -30,6 +30,11 @@
       margin: 20px;
     }
 
+    select {
+      padding: 10px;
+      font-size: 16px;
+    }
+
     #descriptionBox {
       margin: 20px auto;
       max-width: 800px;
@@ -40,24 +45,25 @@
       backdrop-filter: blur(2px); /* Optional: adds a subtle blur behind */
     }
 
-
     #descriptionBox h3 {
       margin-top: 0;
     }
 
-    #nextLink {
-      display: inline-block;
+    #nextButton {
       margin-top: 15px;
       padding: 10px 20px;
       background-color: #ff5722;
       color: #fff;
-      text-decoration: none;
+      border: none;
       border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
     }
 
-    select {
-      padding: 10px;
-      font-size: 16px;
+    #nextButton:hover {
+      background-color: #e64a19;
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -82,7 +88,7 @@
     <div id="descriptionBox">
       <h3 id="styleTitle"></h3>
       <p id="styleDescription"></p>
-      <a id="nextLink" href="weekly.html">Start Weekly Training</a>
+      <button id="nextButton">Start Your Journey</buton>
     </div>
   </div>
 
@@ -90,31 +96,38 @@
     const martialDescriptions = {
       "Kungfu": {
         text: "Kung Fu is more than combat—it's a disciplined journey of self-mastery rooted in centuries of tradition. It cultivates mental focus, physical strength, and emotional resilience through relentless practice and deep respect for the art. Every stance and strike teaches patience, every breath sharpens clarity, and every challenge reveals the power of perseverance. Beyond self-defense, Kung Fu builds confidence, relieves stress, and connects you to a community grounded in honor and humility. It transforms aggression into precision, fear into awareness, and fatigue into resilience—empowering you to face life with strength, balance, and purpose.",
-        image: "url('https://copilot.microsoft.com/th/id/BCO.13e8b530-70b0-4368-a57c-94c820df3804.png')"
+        image: "url('https://copilot.microsoft.com/th/id/BCO.13e8b530-70b0-4368-a57c-94c820df3804.png')",
+        link: "kungfu.html"
       },
       "Karate": {
         text: "Karate is the art of the empty hand—a disciplined practice that sharpens both body and mind. Rooted in respect and tradition, it teaches powerful strikes, precise blocks, and unwavering focus. Through kata and sparring, students build strength, flexibility, and mental resilience, while cultivating humility and self-control. Karate transforms effort into character, empowering you to face challenges with clarity, confidence, and calm determination.",
-        image: "url('https://copilot.microsoft.com/th/id/BCO.1d2cb799-921d-4bf7-b100-42b9299a56b5.png')"
+        image: "url('https://copilot.microsoft.com/th/id/BCO.1d2cb799-921d-4bf7-b100-42b9299a56b5.png')",
+        link: "karate.html"
       },
       "Taekwondo": {
         text: "Taekwondo is a dynamic fusion of speed, precision, and explosive power. Known for its high-flying kicks and disciplined forms, it builds agility, endurance, and mental focus through rigorous training. Each belt earned is a testament to perseverance, each movement a lesson in control and respect. Taekwondo empowers practitioners to defend with grace, think with clarity, and move through life with confidence and purpose.",
-        image: "url('https://copilot.microsoft.com/th/id/BCO.af751206-0bf4-4874-836b-475ca2cea96b.png')"
+        image: "url('https://copilot.microsoft.com/th/id/BCO.af751206-0bf4-4874-836b-475ca2cea96b.png')",
+        link: "taekwondo.html"
       },
       "Muay Thai": {
         text: "Muay Thai, the Art of Eight Limbs, is raw, relentless, and deeply rooted in Thai tradition. It channels elbows, knees, fists, and shins into a symphony of striking power and close-range control. Training builds unmatched cardiovascular endurance, core strength, and mental grit. Beyond the ring, Muay Thai teaches discipline, humility, and the ability to stay calm under pressure—transforming sweat and struggle into strength and self-belief.",
-        image: "url('https://copilot.microsoft.com/th/id/BCO.450de8ea-d2a7-45b4-8116-1cfd040b0615.png')"
+        image: "url('https://copilot.microsoft.com/th/id/BCO.450de8ea-d2a7-45b4-8116-1cfd040b0615.png')",
+        link: "muaythai.html"
       },
       "Boxing": {
         text: "Boxing is a dance of discipline and power—where every jab, cross, and slip is forged through repetition and resolve. It sculpts the body, sharpens reflexes, and builds mental toughness through high-intensity training and tactical precision. More than self-defense, boxing teaches you to stay grounded, focused, and resilient under pressure. It’s a journey of self-discovery, where confidence grows with every round and strength is earned one punch at a time.",
-        image: "url('https://copilot.microsoft.com/th/id/BCO.75a5074c-addd-44d7-a846-e655d001c44b.png')"
+        image: "url('https://copilot.microsoft.com/th/id/BCO.75a5074c-addd-44d7-a846-e655d001c44b.png')",
+        link: "boxing.html"
       },
       "Kickboxing": {
         text: "Kickboxing is a high-impact blend of punches, kicks, and footwork that ignites full-body fitness and mental clarity. It combines the intensity of combat with the rhythm of movement, building cardiovascular health, core strength, and explosive agility. Each session is a release—of stress, doubt, and limitation—replaced by confidence, coordination, and control. Kickboxing empowers you to move with purpose, strike with precision, and live with unstoppable energys.",
-        image: "url('https://copilot.microsoft.com/th/id/BCO.e4394c01-33b7-4aee-90f1-332ef0e22a89.png')"
+        image: "url('https://copilot.microsoft.com/th/id/BCO.e4394c01-33b7-4aee-90f1-332ef0e22a89.png')",
+        link: "kickboxing.html"
       },
       "MMA": {
         text: "MMA is the ultimate test of adaptability—a fusion of striking, grappling, and ground combat that demands total-body mastery and mental sharpness. It blends techniques from boxing, wrestling, jiu-jitsu, and Muay Thai into a fluid, strategic art form. Training in MMA builds explosive strength, endurance, and emotional resilience, while teaching humility, respect, and the power of preparation. It’s not just a sport—it’s a mindset of constant evolution.",
-        image: "url('https://copilot.microsoft.com/th/id/BCO.6263c084-ac11-449d-bcc2-27dc28c19350.png')"
+        image: "url('https://copilot.microsoft.com/th/id/BCO.6263c084-ac11-449d-bcc2-27dc28c19350.png')",
+        link: "mma.html"
       }
     };
 
@@ -123,11 +136,15 @@
       const box = document.getElementById("descriptionBox");
       const title = document.getElementById("styleTitle");
       const desc = document.getElementById("styleDescription");
+      const nextButton = document.getElementById("nextButton");
 
       if (martialDescriptions[selected]) {
         title.textContent = selected;
         desc.textContent = martialDescriptions[selected].text;
         document.body.style.backgroundImage = martialDescriptions[selected].image;
+        nextButton.onclick = () =>{
+          window.location.href = martialDescriptions[selected].link;
+        };
         box.style.display = "block";
       } else {
         box.style.display = "none";
