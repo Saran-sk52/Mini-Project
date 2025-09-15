@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Boxing Progress Tracker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0d0d0d;
+      color: #f0f0f0;
+    }
+
+    header {
+      background: linear-gradient(to right, #111, #222);
+      padding: 1rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ff3c00;
+      border-bottom: 2px solid #ff3c00;
+    }
+
+    .container {
+      padding: 2rem;
+    }
+
+    select, input[type="checkbox"], input[type="number"], button, textarea {
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .phase-section {
+      margin-top: 2rem;
+      border-top: 1px solid #333;
+      padding-top: 1rem;
+    }
+
+    .month {
+      margin-bottom: 2rem;
+      background: #1a1a1a;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .month h3 {
+      color: #ff3c00;
+      margin-bottom: 0.5rem;
+    }
+
+    .day {
+      margin-bottom: 1rem;
+      background: #111;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+
+    .day h4 {
+      margin-bottom: 0.5rem;
+      color: #00ffcc;
+    }
+
+    .goal {
+      margin: 0.3rem 0;
+    }
+
+    .goal input {
+      margin-right: 0.5rem;
+    }
+
+    .exercise {
+      margin-top: 0.5rem;
+    }
+
+    .timer-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.3rem;
+    }
+
+    .timer-display {
+      font-weight: bold;
+      color: #00ffcc;
+    }
+
+    .notes {
+      margin-top: 0.5rem;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #00ffcc;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .syllabus-guide {
+      background: #121212;
+      border: 1px solid #333;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>Boxing Progress Tracker</header>
+
+  <div id="syllabusGuide" class="container syllabus-guide">
+    <h2 style="color:#ff3c00;">Daily Training Routine</h2>
+    <p id="syllabusText" style="line-height:1.6;"></p>
+  </div>
+
+  <div class="container">
+    <label for="phase">Choose Training Phase:</label>
+    <select id="phase" onchange="updateSyllabus()">
+      <option value="fundamentals">Fundamentals</option>
+      <option value="footwork">Footwork</option>
+      <option value="defense">Defense</option>
+      <option value="offense">Offense</option>
+      <option value="conditioning">Conditioning</option>
+      <option value="sparring">Sparring Prep</option>
+    </select>
+
+    <div id="phaseContent" class="phase-section"></div>
+  </div>
+
+  <script>
+    const syllabusData = {
+      fundamentals: {
+        months: ["Month 1", "Month 2"],
+        goals: ["Boxing stance", "Basic punches", "Guard position"],
+        exercises: ["Jab", "Cross", "Shadowboxing"]
+      },
+      footwork: {
+        months: ["Month 3", "Month 4"],
+        goals: ["Movement drills", "Pivoting", "Ring control"],
+        exercises: ["Step & slide", "Circle drill", "Cone footwork"]
+      },
+      defense: {
+        months: ["Month 5", "Month 6"],
+        goals: ["Blocking", "Slipping", "Rolling"],
+        exercises: ["Slip line", "Parry drill", "Duck & weave"]
+      },
+      offense: {
+        months: ["Month 7", "Month 8"],
+        goals: ["Combinations", "Feints", "Target accuracy"],
+        exercises: ["1-2-3 combo", "Feint setups", "Focus mitts"]
+      },
+      conditioning: {
+        months: ["Month 9", "Month 10"],
+        goals: ["Endurance", "Explosiveness", "Recovery"],
+        exercises: ["Jump rope", "Burpees", "Core circuit"]
+      },
+      sparring: {
+        months: ["Month 11", "Month 12"],
+        goals: ["Controlled sparring", "Fight IQ", "Mental toughness"],
+        exercises: ["Light sparring", "Scenario drills", "Breath control"]
+      }
+    };
+
+    function updateSyllabus() {
+      const phase = document.getElementById("phase").value;
+      const content = document.getElementById("phaseContent");
+      const guide = document.getElementById("syllabusText");
+      const data = syllabusData[phase];
+
+      guide.innerHTML = `
+        <strong>Focus for ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase:</strong><br/>
+        <ul>
+          <li><span style="color:#00ffcc;">Warm-up (5–10 min):</span> Jump rope, mobility drills, breathing</li>
+          <li><span style="color:#00ffcc;">Technique (15–20 min):</span> Practice key moves like <em>${data.exercises.join(', ')}</em></li>
+          <li><span style="color:#00ffcc;">Conditioning (10–15 min):</span> Core work, cardio, explosive drills</li>
+          <li><span style="color:#00ffcc;">Reflection (5 min):</span> Write notes, review goals, track progress</li>
+        </ul>
+        <em>Tip:</em> Boxing is rhythm, grit, and precision. Stay sharp, stay humble.
+      `;
+
+      content.innerHTML = "";
+
+      data.months.forEach((month, monthIndex) => {
+        const monthDiv = document.createElement("div");
+        monthDiv.className = "month";
+        monthDiv.innerHTML = `<h3>${month}</h3><div class="progress-bar"><div class="progress-fill" id="progress-${phase}-${monthIndex}"></div></div>`;
+
+        let totalGoals = 0;
+        let completedGoals = 0;
+
+        for (let day = 1; day <= 30; day++) {
+          const dayDiv = document.createElement("div");
+          dayDiv.className = "day";
+          dayDiv.innerHTML = `<h4>Day ${day}</h4>`;
+
+          data.goals.forEach((goal, goalIndex) => {
+            const checkboxId = `${phase}-${monthIndex}-day${day}-goal${goalIndex}`;
+            const isChecked = localStorage.getItem(checkboxId) === "true";
+
+            if (isChecked) completedGoals++;
+            totalGoals++;
+
+            const goalDiv = document.createElement("div");
+            goalDiv.className = "goal";
+            goalDiv.innerHTML = `
+              <input type="checkbox" id="${checkboxId}" ${isChecked ? "checked" : ""} />
+              <label for="${checkboxId}">${goal}</label>
+            `;
+            goalDiv.querySelector("input").addEventListener("change", (e) => {
+              localStorage.setItem(checkboxId, e.target.checked);
+              updateSyllabus();
+            });
+            dayDiv.appendChild(goalDiv);
+          });
+
+          data.exercises.forEach((ex, exIndex) => {
+            const exerciseDiv = document.createElement("div");
+            exerciseDiv.className = "exercise";
+            exerciseDiv.innerHTML = `
+              <label>${ex}</label>
+              <input type="number" min="1" placeholder="min" class="timeInput" />
+              <div class="timer-controls">
+                <button onclick="startTimer(this)">Start</button>
+                <span class="timer-display">00:00</span>
+              </div>
+            `;
+            dayDiv.appendChild(exerciseDiv);
+          });
+
+                    const noteId = `${phase}-${monthIndex}-day${day}-note`;
+          const savedNote = localStorage.getItem(noteId) || "";
+          const notesDiv = document.createElement("div");
+          notesDiv.className = "notes";
+          notesDiv.innerHTML = `
+            <textarea rows="2" placeholder="Daily notes..." onchange="localStorage.setItem('${noteId}', this.value)">${savedNote}</textarea>
+          `;
+          dayDiv.appendChild(notesDiv);
+
+          monthDiv.appendChild(dayDiv);
+        }
+
+        const progressPercent = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
+        const progressFill = monthDiv.querySelector(`#progress-${phase}-${monthIndex}`);
+        if (progressFill) {
+          progressFill.style.width = `${progressPercent}%`;
+        }
+
+        content.appendChild(monthDiv);
+      });
+    }
+
+    function startTimer(button) {
+      const exerciseDiv = button.closest(".exercise");
+      const input = exerciseDiv.querySelector(".timeInput");
+      const display = exerciseDiv.querySelector(".timer-display");
+
+      let minutes = parseInt(input.value);
+      if (isNaN(minutes) || minutes <= 0) {
+        alert("Enter a valid number of minutes.");
+        return;
+      }
+
+      let seconds = minutes * 60;
+      button.disabled = true;
+      display.textContent = formatTime(seconds);
+
+      const interval = setInterval(() => {
+        seconds--;
+        display.textContent = formatTime(seconds);
+
+        if (seconds <= 0) {
+          clearInterval(interval);
+          button.disabled = false;
+          display.textContent = "Time's up!";
+          playAlarm();
+          exerciseDiv.style.border = "2px solid #ff3c00";
+        }
+      }, 1000);
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function playAlarm() {
+      const audio = new Audio("https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg");
+      audio.play();
+    }
+
+    updateSyllabus(); // Load default on page load
+  </script>
+</body>
+</html>

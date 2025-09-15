@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kickboxing Progress Tracker</title>
+  <title>Muay Thai Progress Tracker</title>
   <style>
     body {
       margin: 0;
@@ -38,7 +38,7 @@
       cursor: pointer;
     }
 
-    .phase-section {
+    .stage-section {
       margin-top: 2rem;
       border-top: 1px solid #333;
       padding-top: 1rem;
@@ -122,7 +122,7 @@
   </style>
 </head>
 <body>
-  <header>Kickboxing Progress Tracker</header>
+  <header>Muay Thai Progress Tracker</header>
 
   <div id="syllabusGuide" class="container syllabus-guide">
     <h2 style="color:#ff3c00;">Daily Training Routine</h2>
@@ -130,68 +130,68 @@
   </div>
 
   <div class="container">
-    <label for="phase">Choose Training Phase:</label>
-    <select id="phase" onchange="updateSyllabus()">
-      <option value="basics">Basics</option>
-      <option value="striking">Striking</option>
-      <option value="defense">Defense</option>
-      <option value="combos">Combinations</option>
-      <option value="conditioning">Conditioning</option>
-      <option value="sparring">Sparring Prep</option>
+    <label for="stage">Choose Training Stage:</label>
+    <select id="stage" onchange="updateSyllabus()">
+      <option value="beginner">Beginner</option>
+      <option value="foundation">Foundation</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="advanced">Advanced</option>
+      <option value="fighter">Fighter Prep</option>
+      <option value="elite">Elite</option>
     </select>
 
-    <div id="phaseContent" class="phase-section"></div>
+    <div id="stageContent" class="stage-section"></div>
   </div>
 
   <script>
     const syllabusData = {
-      basics: {
+      beginner: {
         months: ["Month 1", "Month 2"],
-        goals: ["Stance & guard", "Basic punches", "Basic kicks"],
-        exercises: ["Jab-cross", "Front kick", "Shadowboxing"]
+        goals: ["Respect & gym etiquette", "Basic stance", "Intro to strikes"],
+        exercises: ["Muay Thai stance", "Jab-cross drill", "Shadowboxing"]
       },
-      striking: {
+      foundation: {
         months: ["Month 3", "Month 4"],
-        goals: ["Power generation", "Kick technique", "Punch accuracy"],
-        exercises: ["Roundhouse kick", "Hook punch", "Target drills"]
+        goals: ["Footwork basics", "Elbow technique", "Clinch intro"],
+        exercises: ["Step & pivot", "Horizontal elbow", "Clinch entry drill"]
       },
-      defense: {
+      intermediate: {
         months: ["Month 5", "Month 6"],
-        goals: ["Blocking", "Evading", "Footwork"],
-        exercises: ["Slip drill", "Leg check", "Pivot & retreat"]
+        goals: ["Kick combos", "Defensive blocks", "Bag work"],
+        exercises: ["Roundhouse kick", "Leg check", "Heavy bag rounds"]
       },
-      combos: {
+      advanced: {
         months: ["Month 7", "Month 8"],
-        goals: ["Combo fluency", "Timing", "Distance control"],
-        exercises: ["1-2-low kick", "Jab-cross-hook", "Kick-punch combo"]
+        goals: ["Counter strikes", "Clinch control", "Endurance"],
+        exercises: ["Catch & counter", "Knee strikes", "Wall sit"]
       },
-      conditioning: {
+      fighter: {
         months: ["Month 9", "Month 10"],
-        goals: ["Stamina", "Explosiveness", "Recovery"],
-        exercises: ["Jump rope", "Burpees", "Core circuit"]
+        goals: ["Fight strategy", "Sparring drills", "Mental focus"],
+        exercises: ["Feint setups", "Controlled sparring", "Breath control"]
       },
-      sparring: {
+      elite: {
         months: ["Month 11", "Month 12"],
-        goals: ["Controlled sparring", "Fight IQ", "Mental focus"],
-        exercises: ["Light sparring", "Scenario drills", "Breath control"]
+        goals: ["Fight simulation", "Teaching skills", "Recovery routines"],
+        exercises: ["Pad rounds", "Coach shadowing", "Stretch & reflect"]
       }
     };
 
     function updateSyllabus() {
-      const phase = document.getElementById("phase").value;
-      const content = document.getElementById("phaseContent");
+      const stage = document.getElementById("stage").value;
+      const content = document.getElementById("stageContent");
       const guide = document.getElementById("syllabusText");
-      const data = syllabusData[phase];
+      const data = syllabusData[stage];
 
       guide.innerHTML = `
-        <strong>Focus for ${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase:</strong><br/>
+        <strong>Focus for ${stage.charAt(0).toUpperCase() + stage.slice(1)} Stage:</strong><br/>
         <ul>
           <li><span style="color:#00ffcc;">Warm-up (5–10 min):</span> Jump rope, dynamic stretching, breathing</li>
           <li><span style="color:#00ffcc;">Technique (15–20 min):</span> Practice key moves like <em>${data.exercises.join(', ')}</em></li>
-          <li><span style="color:#00ffcc;">Conditioning (10–15 min):</span> Core work, cardio, explosive drills</li>
+          <li><span style="color:#00ffcc;">Conditioning (10–15 min):</span> Core work, bag rounds, bodyweight drills</li>
           <li><span style="color:#00ffcc;">Reflection (5 min):</span> Write notes, review goals, track progress</li>
         </ul>
-        <em>Tip:</em> Kickboxing is precision, power, and rhythm. Stay sharp, stay grounded.
+        <em>Tip:</em> Muay Thai is forged in repetition, grit, and respect. Train hard, stay humble.
       `;
 
       content.innerHTML = "";
@@ -199,7 +199,7 @@
       data.months.forEach((month, monthIndex) => {
         const monthDiv = document.createElement("div");
         monthDiv.className = "month";
-        monthDiv.innerHTML = `<h3>${month}</h3><div class="progress-bar"><div class="progress-fill" id="progress-${phase}-${monthIndex}"></div></div>`;
+        monthDiv.innerHTML = `<h3>${month}</h3><div class="progress-bar"><div class="progress-fill" id="progress-${stage}-${monthIndex}"></div></div>`;
 
         let totalGoals = 0;
         let completedGoals = 0;
@@ -210,7 +210,7 @@
           dayDiv.innerHTML = `<h4>Day ${day}</h4>`;
 
           data.goals.forEach((goal, goalIndex) => {
-            const checkboxId = `${phase}-${monthIndex}-day${day}-goal${goalIndex}`;
+            const checkboxId = `${stage}-${monthIndex}-day${day}-goal${goalIndex}`;
             const isChecked = localStorage.getItem(checkboxId) === "true";
 
             if (isChecked) completedGoals++;
@@ -237,13 +237,13 @@
               <input type="number" min="1" placeholder="min" class="timeInput" />
               <div class="timer-controls">
                 <button onclick="startTimer(this)">Start</button>
-                <span class="timer-display">00:00</span>
+                                <span class="timer-display">00:00</span>
               </div>
             `;
             dayDiv.appendChild(exerciseDiv);
           });
 
-                    const noteId = `${phase}-${monthIndex}-day${day}-note`;
+          const noteId = `${stage}-${monthIndex}-day${day}-note`;
           const savedNote = localStorage.getItem(noteId) || "";
           const notesDiv = document.createElement("div");
           notesDiv.className = "notes";
@@ -256,7 +256,7 @@
         }
 
         const progressPercent = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
-        const progressFill = monthDiv.querySelector(`#progress-${phase}-${monthIndex}`);
+        const progressFill = monthDiv.querySelector(`#progress-${stage}-${monthIndex}`);
         if (progressFill) {
           progressFill.style.width = `${progressPercent}%`;
         }
