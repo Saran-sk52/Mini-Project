@@ -124,11 +124,34 @@
       <label for="confirmPassword">Confirm Password</label>
       <input type="password" id="confirmPassword" placeholder="Confirm your password" required />
 
-      <button onclick="location.href='signin.html'">Submit</button>
+      <button type="submit">Submit</button>
     </form>
     <div class="footer">Honor. Discipline. Community.</div>
   </div>
 
-  <script src="login.js"></script>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (!username || !email || !password || !confirmPassword) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      // Simulate successful login
+      alert("Login successful!");
+      window.location.href = "signin.html";
+    });
+  </script>
 </body>
 </html>
