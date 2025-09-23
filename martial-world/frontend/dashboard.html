@@ -4,6 +4,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <title>Martial World - Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+  
+
   <style>
     * {
       box-sizing: border-box;
@@ -147,6 +151,45 @@
 
   <div id="mouse-light"></div>
 
+  <div class="logout-container">
+  <button onclick="logout()">Logout</button>
+  </div>
+
+  <style>
+    .logout-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 101;
+    }
+  </style>
+
+  <script>
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQG7Z8K3qn__A5Nge43L5rCuLu1xqRGv8",
+      authDomain: "martialworld-mvp.firebaseapp.com",
+      projectId: "martialworld-mvp",
+      storageBucket: "martialworld-mvp.appspot.com",
+      messagingSenderId: "308244643409",
+      appId: "1:308244643409:web:a44e308d6219d8c3160270",
+      measurementId: "G-1B777DWD7S"
+    };
+
+firebase.initializeApp(firebaseConfig);
+
+
+    function logout() {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "signin.html";
+      }).catch((error) => {
+        console.error("Logout failed:", error);
+      });
+    }
+  </script>
+
+
   <script>
     const light = document.getElementById('mouse-light');
     document.addEventListener('mousemove', (e) => {
@@ -154,6 +197,27 @@
       const y = e.clientY;
       light.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15) 0%, transparent 40%)`;
     });
+
+  const uid = firebase.auth().currentUser.uid;
+  db.collection("users").doc(uid).get().then((doc) => {
+    const data = doc.data();
+    console.log("Welcome", data.username);
+  });
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = "signin.html";
+    }
+  });
+  
+    document.getElementById("logout").addEventListener("click", function () {
+      firebase.auth().signOut().then(() => {
+        window.location.href = "signin.html";
+      }).catch((error) => {
+      alert("Logout failed: " + error.message);
+    });
+  });
+
   </script>
 </body>
 </html>

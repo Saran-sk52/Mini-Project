@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Martial World - Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap" rel="stylesheet">
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <!-- Firebase Auth -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+
+
   <style>
     body {
       margin: 0;
@@ -125,33 +133,81 @@
       <input type="password" id="confirmPassword" placeholder="Confirm your password" required />
 
       <button type="submit">Submit</button>
+      <div style="text-align: center; margin-top: 10px;">
+        <span style="color: #ccc; font-size: 0.9rem;">Already a member?</span>
+        <br />
+        <a href="signin.html" style="color: #e53935; text-decoration: underline; font-weight: bold;">Sign in here</a>
+      </div>
+
     </form>
     <div class="footer">Honor. Discipline. Community.</div>
   </div>
 
   <script>
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+  // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQG7Z8K3qn__A5Nge43L5rCuLu1xqRGv8",
+      authDomain: "martialworld-mvp.firebaseapp.com",
+      projectId: "martialworld-mvp",
+      storageBucket: "martialworld-mvp.appspot.com",
+      messagingSenderId: "308244643409",
+      appId: "1:308244643409:web:a44e308d6219d8c3160270",
+      measurementId: "G-1B777DWD7S"
+    };
 
-      const username = document.getElementById("username").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    console.log("✅ Firebase initialized");
 
-      if (!username || !email || !password || !confirmPassword) {
-        alert("Please fill in all fields.");
-        return;
-      }
+    // Attach form listener
+    const form = document.getElementById("loginForm");
+    if (form) {
+      console.log("✅ Form listener attached");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-      }
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
 
-      // Simulate successful login
-      alert("Login successful!");
-      window.location.href = "signin.html";
-    });
-  </script>
+        console.log("📝 Submitted values:", { username, email, password, confirmPassword });
+
+        if (!username || !email || !password || !confirmPassword) {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          alert("Passwords do not match.");
+          return;
+        }
+
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            console.log("✅ User created:", user.uid);
+
+            return db.collection("users").doc(user.uid).set({
+              username: username,
+              email: email,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          })
+          .then(() => {
+            console.log("✅ User data stored in Firestore");
+            alert("Account created successfully!");
+            window.location.href = "signin.html";
+          })
+          .catch((error) => {
+            console.error("❌ Signup error:", error.code, error.message);
+            alert("Signup failed: " + error.message);
+          });
+      });
+    } else {
+      console.error("❌ Form element not found");
+    }
+</script>
 </body>
 </html>
