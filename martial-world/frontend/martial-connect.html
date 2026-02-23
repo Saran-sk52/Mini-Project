@@ -1,6 +1,934 @@
-<h2>Martial Connect</h2>
-<form id="postForm">
-  <input type="text" placeholder="Caption" />
-  <input type="file" accept="video/*,image/*" />
-  <button type="submits">Post</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Martial Connect - The Dojo Network</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Anton&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app-compat.js"></script>
+  <!-- Firebase Auth -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #000000;
+      --card-bg: #121212;
+      --card-hover: #1e1e1e;
+      --text-main: #ffffff;
+      --text-muted: #b0b3b8;
+      --accent-color: #ff4500;
+      /* Orangish Red */
+      --accent-hover: #e03e00;
+      --border-color: #2f3336;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Roboto', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout */
+    .container {
+      display: grid;
+      grid-template-columns: 275px 1fr 350px;
+      max-width: 1300px;
+      margin: 0 auto;
+      min-height: 100vh;
+      gap: 20px;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .logo {
+      font-family: 'Anton', sans-serif;
+      font-size: 2rem;
+      color: var(--accent-color);
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 69, 0, 0.1);
+      color: var(--accent-color);
+    }
+
+    .nav-item i {
+      font-size: 1.5rem;
+      width: 30px;
+      text-align: center;
+    }
+
+    .user-mini-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      margin-top: auto;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .user-mini-profile:hover {
+      background-color: var(--card-hover);
+    }
+
+    .user-avatar-small {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--border-color);
+      object-fit: cover;
+    }
+
+    /* Main Feed */
+    .feed {
+      border-right: 1px solid var(--border-color);
+      padding-top: 20px;
+    }
+
+    .feed-header {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .create-post {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 15px;
+    }
+
+    .post-input-area {
+      flex: 1;
+    }
+
+    .post-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.2rem;
+      resize: none;
+      outline: none;
+      min-height: 50px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .action-icons i {
+      color: var(--accent-color);
+      font-size: 1.2rem;
+      margin-right: 15px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .action-icons i:hover {
+      transform: scale(1.1);
+    }
+
+    .btn-post {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-post:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-post:disabled {
+      background-color: var(--card-bg);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    /* Post Card */
+    .post-card {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 15px;
+      transition: background 0.2s;
+    }
+
+    .post-card:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    .post-content {
+      flex: 1;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .post-author {
+      font-weight: bold;
+      color: var(--text-main);
+    }
+
+    .post-handle {
+      color: var(--text-muted);
+      margin-left: 5px;
+    }
+
+    .post-time {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .post-text {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .post-image {
+      width: 100%;
+      border-radius: 15px;
+      margin-top: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    .post-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      max-width: 80%;
+      color: var(--text-muted);
+    }
+
+    .post-action {
+      cursor: pointer;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .post-action:hover {
+      color: var(--accent-color);
+    }
+
+    /* Right Sidebar */
+    .widgets {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .widget-card {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .widget-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-family: 'Anton', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .progress-item {
+      margin-bottom: 15px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background-color: var(--border-color);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--accent-color);
+      border-radius: 4px;
+    }
+
+    .follow-suggestion {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .follow-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-follow {
+      background-color: white;
+      color: black;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 16px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-follow:hover {
+      background-color: var(--text-muted);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      display: none;
+      /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      width: 90%;
+      max-width: 500px;
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 0 30px rgba(255, 69, 0, 0.2);
+      animation: slideDown 0.4s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal h2 {
+      font-family: 'Anton', sans-serif;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 12px;
+      background-color: #000;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: white;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: var(--accent-color);
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 1000px) {
+      .container {
+        grid-template-columns: 80px 1fr 300px;
+      }
+
+      .nav-item span {
+        display: none;
+      }
+
+      .nav-item i {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        text-align: center;
+      }
+
+      .btn-post {
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding-bottom: 60px;
+      }
+
+      .sidebar {
+        position: fixed;
+        bottom: 0;
+        top: auto;
+        width: 100%;
+        height: 60px;
+        flex-direction: row;
+        justify-content: space-around;
+        background: black;
+        border-top: 1px solid var(--border-color);
+        border-right: none;
+        padding: 0;
+        z-index: 50;
+      }
+
+      .logo {
+        display: none;
+      }
+
+      .nav-links {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+      }
+
+      .nav-item {
+        padding: 10px;
+      }
+
+      .user-mini-profile {
+        display: none;
+      }
+
+      .widgets {
+        display: none;
+      }
+
+      .feed {
+        border-right: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Modal for Profile Completion -->
+  <div class="modal-overlay" id="onboardingModal">
+    <div class="modal">
+      <h2>Complete Your Dojo Profile</h2>
+      <p style="text-align: center; margin-bottom: 20px; color: #b0b3b8;">Enter the martial world fully.</p>
+      <form id="onboardingForm">
+        <div class="form-group">
+          <label>Profile Picture URL</label>
+          <input type="url" id="profilePicUrl" class="form-input" placeholder="https://example.com/my-image.jpg"
+            required>
+        </div>
+        <div class="form-group">
+          <label>Main Discipline (Interest)</label>
+          <select id="martialArtInterest" class="form-select">
+            <option value="Any">General Enthusiast</option>
+            <option value="Karate">Karate</option>
+            <option value="Boxing">Boxing</option>
+            <option value="MMA">MMA</option>
+            <option value="Muay Thai">Muay Thai</option>
+            <option value="Kung Fu">Kung Fu</option>
+            <option value="Taekwondo">Taekwondo</option>
+            <option value="Jiu Jitsu">Jiu Jitsu</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Current Rank / Level</label>
+          <input type="text" id="userRank" class="form-input" placeholder="e.g. White Belt, Amateur, Pro" required>
+        </div>
+        <div class="form-group">
+          <label>Bio & Philosophy</label>
+          <textarea id="userBio" class="form-textarea" placeholder="Tell us about your journey..." required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">Enter the Dojo</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+      <div>
+        <div class="logo" onclick="location.href='dashboard.html'">Martial World</div>
+        <nav class="nav-links">
+          <a class="nav-item" href="dashboard.html">
+            <i class="fas fa-home"></i> <span>Home</span>
+          </a>
+          <div class="nav-item active" style="color: var(--accent-color);">
+            <i class="fas fa-hashtag"></i> <span>Connect</span>
+          </div>
+          <div class="nav-item">
+            <i class="fas fa-bell"></i> <span>Notifications</span>
+          </div>
+          <div class="nav-item">
+            <i class="fas fa-envelope"></i> <span>Messages</span>
+          </div>
+          <div class="nav-item" id="myProfileLink">
+            <i class="fas fa-user"></i> <span>My Profile</span>
+          </div>
+        </nav>
+      </div>
+
+      <div class="user-mini-profile" id="logoutBtn">
+        <img src="https://via.placeholder.com/40" alt="Me" class="user-avatar-small" id="miniProfilePic">
+        <div style="display: flex; flex-direction: column;">
+          <span style="font-weight: bold; font-size: 0.9rem;" id="miniUsername">...</span>
+          <span style="color: var(--text-muted); font-size: 0.8rem;">Logout</span>
+        </div>
+        <i class="fas fa-ellipsis-h" style="margin-left: auto; color: var(--text-muted);"></i>
+      </div>
+    </div>
+
+    <!-- MAIN FEED -->
+    <div class="feed">
+      <div class="feed-header">
+        <h2>Home</h2>
+      </div>
+
+      <!-- Create Post -->
+      <div class="create-post">
+        <img src="https://via.placeholder.com/40" alt="Me" class="user-avatar-small" id="postInputAvatar">
+        <div class="post-input-area">
+          <textarea class="post-input" id="newPostContent" placeholder="Share your martial arts journey..."></textarea>
+          <div class="post-actions">
+            <div class="action-icons">
+              <i class="far fa-image"></i>
+              <i class="fas fa-video"></i>
+              <i class="far fa-smile"></i>
+            </div>
+            <button class="btn-post" id="submitPostBtn">Post</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed Stream -->
+      <div id="postsStream">
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR (Widgets) -->
+    <div class="widgets">
+      <!-- Search -->
+      <div style="margin-bottom: 20px;">
+        <input type="text" placeholder="Search Martial Artists"
+          style="width: 100%; padding: 10px; border-radius: 20px; border: none; background: var(--card-bg); color: white;">
+      </div>
+
+      <!-- Progress Widget -->
+      <div class="widget-card">
+        <div class="widget-title">My Progress</div>
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Strength</span>
+            <span>75%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 75%;"></div>
+          </div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Technique</span>
+            <span>60%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 60%; background-color: #00bcd4;"></div>
+          </div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-label">
+            <span>Endurance</span>
+            <span>85%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 85%; background-color: #8bc34a;"></div>
+          </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 10px;">Rank: <span id="widgetRank"
+            style="color: white; font-weight: bold;">Loading...</span></p>
+      </div>
+
+      <!-- Who to Follow -->
+      <div class="widget-card">
+        <div class="widget-title">Who to Follow</div>
+
+        <div class="follow-suggestion">
+          <div class="follow-user">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="user-avatar-small">
+            <div>
+              <div style="font-weight: bold; font-size: 0.9rem;">Bruce Lee Fan</div>
+              <div style="color: var(--text-muted); font-size: 0.8rem;">@dragon_way</div>
+            </div>
+          </div>
+          <button class="btn-follow">Follow</button>
+        </div>
+
+        <div class="follow-suggestion">
+          <div class="follow-user">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="user-avatar-small">
+            <div>
+              <div style="font-weight: bold; font-size: 0.9rem;">Sarah Judo</div>
+              <div style="color: var(--text-muted); font-size: 0.8rem;">@sarah_throws</div>
+            </div>
+          </div>
+          <button class="btn-follow">Follow</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- FIREBASE CONFIG ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQG7Z8K3qn__A5Nge43L5rCuLu1xqRGv8",
+      authDomain: "martialworld-mvp.firebaseapp.com",
+      projectId: "martialworld-mvp",
+      storageBucket: "martialworld-mvp.appspot.com",
+      messagingSenderId: "308244643409",
+      appId: "1:308244643409:web:a44e308d6219d8c3160270",
+      measurementId: "G-1B777DWD7S"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // DOM Elements
+    const onboardingModal = document.getElementById('onboardingModal');
+    const onboardingForm = document.getElementById('onboardingForm');
+    const postsStream = document.getElementById('postsStream');
+    const newPostContent = document.getElementById('newPostContent');
+    const submitPostBtn = document.getElementById('submitPostBtn');
+
+    // User State
+    let currentUser = null;
+    let userProfile = null;
+
+    // --- AUTHENTICATION & ONBOARDING ---
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        console.log("Logged in as:", user.email);
+        currentUser = user;
+
+        // Fetch User Data
+        const userDocRef = db.collection("users").doc(user.uid);
+        const userDoc = await userDocRef.get();
+
+        if (userDoc.exists) {
+          userProfile = userDoc.data();
+          updateUIWithUserData();
+
+          // Check if profile is "complete" (has the specific social connect fields)
+          if (!userProfile.profilePic || !userProfile.martialArtInterest || !userProfile.bio) {
+            onboardingModal.style.display = "flex";
+          }
+        } else {
+          // Doc doesn't exist (rare if created in login, but safe to handle)
+          onboardingModal.style.display = "flex";
+        }
+
+        // Load Feed
+        loadPosts();
+
+      } else {
+        // Not logged in -> Redirect to Signin
+        window.location.href = "signin.html";
+      }
+    });
+
+    // Handle Profile Completion
+    onboardingForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const profilePic = document.getElementById('profilePicUrl').value;
+      const interest = document.getElementById('martialArtInterest').value;
+      const rank = document.getElementById('userRank').value;
+      const bio = document.getElementById('userBio').value;
+
+      try {
+        await db.collection("users").doc(currentUser.uid).set({
+          ...userProfile, // Keep existing fields like email/username
+          profilePic: profilePic,
+          martialArtInterest: interest,
+          rank: rank,
+          bio: bio,
+          followers: [],
+          following: []
+        }, { merge: true });
+
+        // Update local state and hide modal
+        userProfile = { ...userProfile, profilePic, martialArtInterest: interest, rank, bio };
+        updateUIWithUserData();
+        onboardingModal.style.display = "none";
+        alert("Welcome to the Martial Connect!");
+
+      } catch (error) {
+        console.error("Error updating profile:", error);
+        alert("Failed to save profile. Please try again.");
+      }
+    });
+
+    // Helper to update Sidebar stuff
+    function updateUIWithUserData() {
+      if (userProfile) {
+        // Sidebar Mini Profile
+        document.getElementById('miniUsername').textContent = userProfile.username || currentUser.email.split('@')[0];
+        if (userProfile.profilePic) {
+          document.getElementById('miniProfilePic').src = userProfile.profilePic;
+          document.getElementById('postInputAvatar').src = userProfile.profilePic;
+        }
+
+        // Right Widget Rank
+        if (userProfile.rank) {
+          document.getElementById('widgetRank').textContent = userProfile.rank;
+        } else {
+          document.getElementById('widgetRank').textContent = "Novice";
+        }
+      }
+    }
+
+    // --- LOGOUT ---
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      auth.signOut().then(() => {
+        window.location.href = "signin.html";
+      });
+    });
+
+    // --- FEED LOGIC ---
+
+    // 1. Submit Post
+    submitPostBtn.addEventListener('click', async () => {
+      const content = newPostContent.value.trim();
+      if (!content) return;
+
+      const newPost = {
+        userId: currentUser.uid,
+        username: userProfile.username || "Anonymous",
+        userHandle: "@" + (userProfile.username || "user").toLowerCase().replace(/\\s/g, ''),
+        userAvatar: userProfile.profilePic || "https://via.placeholder.com/40",
+        text: content,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        likes: 0,
+        comments: 0
+      };
+
+      try {
+        await db.collection("posts").add(newPost);
+        newPostContent.value = ""; // Clear input
+        loadPosts(); // Reload feed (simple re-fetch for now)
+      } catch (error) {
+        console.error("Error posting:", error);
+        alert("Could not post. " + error.message);
+      }
+    });
+
+    // 2. Load Posts
+    async function loadPosts() {
+      postsStream.innerHTML = '<div class="loading-spinner"></div>';
+
+      try {
+        // Simple query without index requirement if possible, or gracefully degrade
+        // Limit to 20
+        const snapshot = await db.collection("posts")
+          .orderBy("timestamp", "desc")
+          .limit(20)
+          .get();
+
+        postsStream.innerHTML = ""; // Clear spinner
+
+        if (snapshot.empty) {
+          postsStream.innerHTML = "<p style='text-align:center; color:var(--text-muted); padding:20px;'>No posts yet. Be the first to share!</p>";
+          return;
+        }
+
+        snapshot.docs.forEach(doc => {
+          const post = doc.data();
+          renderPost(post);
+        });
+
+      } catch (error) {
+        console.error("Error loading posts:", error);
+        // Fallback for demo if backend permissions fail
+        if (error.code === 'failed-precondition') {
+          postsStream.innerHTML = "<p style='text-align:center; color:orange; padding:20px;'>Firestore Index required for sorting. Please check console.</p>";
+        } else {
+          postsStream.innerHTML = "<p style='text-align:center; color:var(--text-muted); padding:20px;'>Unable to load posts at this time.</p>";
+        }
+      }
+    }
+
+    // render
+    function renderPost(post) {
+      let timeString = "Just now";
+      if (post.timestamp) {
+        // Handle Firestore Timestamp or Date
+        const date = post.timestamp.toDate ? post.timestamp.toDate() : new Date(post.timestamp);
+        timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
+      const postHTML = `
+        <div class="post-card">
+          <img src="${post.userAvatar}" alt="Avatar" class="user-avatar-small">
+          <div class="post-content">
+            <div class="post-header">
+              <div>
+                <span class="post-author">${post.username}</span>
+                <span class="post-handle">${post.userHandle}</span>
+              </div>
+              <span class="post-time">${timeString}</span>
+            </div>
+            <div class="post-text">${post.text}</div>
+            ${post.image ? `<img src="${post.image}" class="post-image">` : ''}
+            
+            <div class="post-footer">
+              <div class="post-action"><i class="far fa-comment"></i> ${post.comments || 0}</div>
+              <div class="post-action"><i class="fas fa-retweet"></i> 0</div>
+              <div class="post-action"><i class="far fa-heart"></i> ${post.likes || 0}</div>
+              <div class="post-action"><i class="far fa-share-square"></i></div>
+            </div>
+          </div>
+        </div>
+      `;
+      postsStream.insertAdjacentHTML('beforeend', postHTML);
+    }
+  </script>
+</body>
+
+</html>
