@@ -1,2 +1,1471 @@
-<h2>Martial Mart</h2>
-<div id="products"></div>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Martial Mart | Premium Combat Gear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --bg-surface: #1f2833;
+            --bg-surface-light: #2c3947;
+            --primary-accent: #ff5722;
+            --primary-accent-hover: #ff784e;
+            --text-light: #c5c6c7;
+            --text-white: #ffffff;
+            --border-color: #384454;
+            --success-color: #4caf50;
+            --star-color: #ffc107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--primary-accent);
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 600px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-right: 50px;
+            border-radius: 25px;
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-white);
+            font-size: 16px;
+            transition: outline none;
+            outline: none;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.2);
+        }
+
+        .search-container button {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 50px;
+            border: none;
+            background: transparent;
+            color: var(--primary-accent);
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 0 25px 25px 0;
+            transition: color 0.3s;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-icon {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 20px;
+            position: relative;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-icon span {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .nav-icon:hover {
+            color: var(--primary-accent);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background-color: var(--primary-accent);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Categories Bar */
+        .categories-bar {
+            background-color: var(--bg-surface);
+            padding: 10px 5%;
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border-color);
+            scrollbar-width: none;
+        }
+
+        .categories-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-item {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .category-item.active {
+            color: var(--primary-accent);
+        }
+
+        .category-item::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-accent);
+            transition: width 0.3s ease;
+        }
+
+        .category-item:hover {
+            color: var(--primary-accent);
+        }
+
+        .category-item:hover::after,
+        .category-item.active::after {
+            width: 100%;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 5%;
+            min-height: 60vh;
+        }
+
+        .section-title {
+            color: var(--text-white);
+            font-size: 28px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-accent);
+            padding-left: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 20px;
+            padding: 50px;
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background-color: var(--bg-surface);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(255, 87, 34, 0.15);
+            border-color: var(--primary-accent);
+        }
+
+        .product-image-container {
+            width: 100%;
+            height: 250px;
+            background-color: var(--bg-surface-light);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+            padding: 20px;
+        }
+
+        .product-card:hover .product-image-container img {
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        .wishlist-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: var(--text-white);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .wishlist-btn:hover {
+            background: var(--primary-accent);
+            transform: scale(1.1);
+        }
+
+        .product-details {
+            padding: 20px;
+        }
+
+        .product-category {
+            font-size: 12px;
+            color: var(--primary-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-title {
+            color: var(--text-white);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-rating {
+            color: var(--star-color);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .product-rating span {
+            color: var(--text-light);
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .product-price-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-white);
+        }
+
+        .old-price {
+            font-size: 16px;
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 12px;
+            background-color: transparent;
+            border: 2px solid var(--primary-accent);
+            color: var(--primary-accent);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .add-to-cart:hover {
+            background-color: var(--primary-accent);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--bg-surface);
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            transition: right 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            color: var(--text-white);
+            font-size: 22px;
+        }
+
+        .close-cart {
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--text-light);
+        }
+
+        .close-cart:hover {
+            color: var(--primary-accent);
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            background: var(--bg-surface-light);
+            padding: 15px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: var(--primary-accent);
+            font-weight: 800;
+        }
+
+        .remove-item {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .remove-item:hover {
+            color: #ff3366;
+        }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-surface);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-white);
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .checkout-btn:hover {
+            background: var(--primary-accent-hover);
+        }
+
+        /* Modals Generic Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Box modal style */
+        .modal-content {
+            background: var(--bg-surface);
+            width: 90%;
+            max-width: 900px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            max-height: 90vh;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: var(--text-light);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--primary-accent);
+        }
+
+        /* Registration Modal Layout */
+        .modal-left {
+            background: linear-gradient(135deg, var(--bg-color) 0%, #1a0f0a 100%);
+            width: 40%;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .modal-left h2 {
+            color: var(--text-white);
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .modal-left p {
+            color: var(--text-light);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .modal-right {
+            width: 60%;
+            padding: 50px 40px;
+            background: var(--bg-surface);
+            overflow-y: auto;
+        }
+
+        .modal-right::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-right::-webkit-scrollbar-thumb {
+            background: var(--primary-accent);
+            border-radius: 3px;
+        }
+
+        /* Forms */
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 14px 15px;
+            background: var(--bg-surface-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-white);
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-accent);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        /* Product Info Modal Layout */
+        .product-modal-content {
+            background: var(--bg-surface);
+            width: 95%;
+            max-width: 1000px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            transform: perspective(1000px) rotateX(-20deg) scale(0.9);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+
+        .modal-overlay.active .product-modal-content {
+            transform: perspective(1000px) rotateX(0deg) scale(1);
+            opacity: 1;
+        }
+
+        .p-modal-left {
+            width: 45%;
+            background: var(--bg-surface-light);
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .p-modal-left img {
+            max-width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
+            transition: transform 0.5s ease;
+        }
+
+        .p-modal-left:hover img {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .p-modal-right {
+            width: 55%;
+            padding: 40px;
+            overflow-y: auto;
+            background: var(--bg-surface);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .p-modal-right::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .p-modal-right::-webkit-scrollbar-thumb {
+            background: var(--primary-accent);
+            border-radius: 3px;
+        }
+
+        .pm-cat {
+            color: var(--primary-accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+        }
+
+        .pm-title {
+            color: var(--text-white);
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .pm-price-block {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 10px 0;
+        }
+
+        .pm-price {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-white);
+        }
+
+        .pm-old {
+            font-size: 20px;
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+
+        .pm-desc {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 16px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .pm-reviews-section {
+            margin-top: 10px;
+        }
+
+        .pm-reviews-title {
+            color: var(--text-white);
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .review-card {
+            background: var(--bg-surface-light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--primary-accent);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .reviewer-name {
+            color: var(--text-white);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .review-stars {
+            color: var(--star-color);
+            font-size: 12px;
+        }
+
+        .review-text {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .pm-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            position: sticky;
+            bottom: 0;
+            background: var(--bg-surface);
+            padding-top: 15px;
+        }
+
+        .pm-btn-add {
+            flex: 2;
+            padding: 18px;
+            background: var(--primary-accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(255, 87, 34, 0.3);
+        }
+
+        .pm-btn-add:hover {
+            background: var(--primary-accent-hover);
+            transform: translateY(-3px);
+        }
+
+        .pm-btn-wish {
+            flex: 1;
+            padding: 18px;
+            background: transparent;
+            color: var(--text-white);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pm-btn-wish:hover {
+            border-color: #ff3366;
+            color: #ff3366;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+            }
+
+            .search-container {
+                order: 3;
+                margin: 15px 0 0;
+                max-width: 100%;
+            }
+
+            .modal-content,
+            .product-modal-content {
+                flex-direction: column;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .modal-left,
+            .modal-right,
+            .p-modal-left,
+            .p-modal-right {
+                width: 100%;
+                padding: 25px;
+            }
+
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .p-modal-left {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <a href="#" class="logo">
+            <i class="fa-solid fa-khanda"></i> Martial <span>Mart</span>
+        </a>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for martial arts gear, equipment, brands...">
+            <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="nav-icons">
+            <a href="martial-connect.html" class="nav-icon">
+                <i class="fa-solid fa-globe"></i> <span>Connect</span>
+            </a>
+            <a href="martial-track.html" class="nav-icon">
+                <i class="fa-solid fa-chart-line"></i> <span>Track</span>
+            </a>
+            <div class="nav-icon" id="user-profile-btn">
+                <i class="fa-solid fa-user"></i> <span id="nav-user-name">Login</span>
+            </div>
+            <div class="nav-icon" id="cart-icon">
+                <i class="fa-solid fa-cart-shopping"></i> <span>Cart</span>
+                <div class="cart-badge" id="cart-badge">0</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Sub-nav -->
+    <nav class="categories-bar" id="category-bar">
+        <div class="category-item active" data-category="All">All Gear</div>
+        <div class="category-item" data-category="Boxing">Boxing</div>
+        <div class="category-item" data-category="MMA">MMA</div>
+        <div class="category-item" data-category="Karate">Karate</div>
+        <div class="category-item" data-category="Jiu-Jitsu">Jiu-Jitsu</div>
+        <div class="category-item" data-category="Muay Thai">Muay Thai</div>
+        <div class="category-item" data-category="Taekwondo">Taekwondo</div>
+        <div class="category-item" data-category="Kung Fu">Kung Fu</div>
+        <div class="category-item" data-category="Fitness">Fitness & Recovery</div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="section-title">
+            <h2 id="section-title-text">Trending Martial Arts Gear</h2>
+        </div>
+
+        <div class="no-results" id="no-results">
+            <i class="fa-solid fa-box-open" style="font-size: 40px; margin-bottom: 20px; display: block;"></i>
+            No products found matching your criteria.
+        </div>
+
+        <div class="product-grid" id="productGrid">
+            <!-- Products injected by JS -->
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <i class="fa-solid fa-xmark close-cart" id="closeCart"></i>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items injected by JS -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">₹0</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Registration/Login Modal -->
+    <div class="modal-overlay" id="registration-modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeModal('registration-modal')"></i>
+            <div class="modal-left">
+                <h2>Welcome to Martial Mart</h2>
+                <p>Equip yourself with the best gear. Provide your shipping details to complete your first-time setup
+                    for faster checkout!</p>
+            </div>
+            <div class="modal-right">
+                <form id="user-details-form">
+                    <div class="form-row">
+                        <div class="form-group"><label>First Name</label><input type="text" id="fname" required></div>
+                        <div class="form-group"><label>Last Name</label><input type="text" id="lname" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Mobile Number</label><input type="tel" id="phone"
+                                pattern="[0-9]{10}" title="Please enter a valid 10-digit mobile number" required>
+                        </div>
+                        <div class="form-group"><label>Email ID</label><input type="email" id="email" required></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Shipping Address</label>
+                        <textarea id="address" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Pincode / ZIP</label><input type="text" id="pincode" required>
+                        </div>
+                        <div class="form-group"><label>Locality / Town</label><input type="text" id="locality" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>City / District</label><input type="text" id="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State</label>
+                            <select id="state" required>
+                                <option value="" disabled selected>Select Indian State</option>
+                                <option>Andhra Pradesh</option>
+                                <option>Arunachal Pradesh</option>
+                                <option>Assam</option>
+                                <option>Bihar</option>
+                                <option>Chhattisgarh</option>
+                                <option>Delhi</option>
+                                <option>Goa</option>
+                                <option>Gujarat</option>
+                                <option>Haryana</option>
+                                <option>Himachal Pradesh</option>
+                                <option>Jharkhand</option>
+                                <option>Karnataka</option>
+                                <option>Kerala</option>
+                                <option>Madhya Pradesh</option>
+                                <option>Maharashtra</option>
+                                <option>Manipur</option>
+                                <option>Meghalaya</option>
+                                <option>Mizoram</option>
+                                <option>Nagaland</option>
+                                <option>Odisha</option>
+                                <option>Punjab</option>
+                                <option>Rajasthan</option>
+                                <option>Sikkim</option>
+                                <option>Tamil Nadu</option>
+                                <option>Telangana</option>
+                                <option>Tripura</option>
+                                <option>Uttar Pradesh</option>
+                                <option>Uttarakhand</option>
+                                <option>West Bengal</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Save & Continue</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="product-modal-content" id="product-modal-content-container">
+            <i class="fa-solid fa-xmark close-modal" onclick="closeModal('product-modal')"></i>
+            <div class="p-modal-left">
+                <img id="pm-img" src="" alt="">
+            </div>
+            <div class="p-modal-right">
+                <div>
+                    <div class="pm-cat" id="pm-cat">Category</div>
+                    <div class="pm-title" id="pm-title">Product Title</div>
+
+                    <div class="product-rating" id="pm-stars" style="margin-top: 10px;">
+                        <!-- Stars injected -->
+                    </div>
+
+                    <div class="pm-price-block">
+                        <div class="pm-price" id="pm-price">₹0</div>
+                        <div class="pm-old" id="pm-old" style="display:none;">₹0</div>
+                    </div>
+                </div>
+
+                <div class="pm-desc" id="pm-desc">
+                    Product Description goes here.
+                </div>
+
+                <div class="pm-reviews-section">
+                    <div class="pm-reviews-title"><i class="fa-solid fa-comments"></i> User Feedback</div>
+                    <div id="pm-reviews-container">
+                        <!-- Reviews injected -->
+                    </div>
+                </div>
+
+                <div class="pm-actions">
+                    <button class="pm-btn-wish" id="pm-btn-wish" onclick="toggleModalWish(this)"><i
+                            class="fa-regular fa-heart"></i> Add to Wishlist</button>
+                    <button class="pm-btn-add" id="pm-btn-add"><i class="fa-solid fa-cart-plus"></i> Add to
+                        Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Products Database inside JS array with enhanced fields (description, rating, feedbacks)
+        const products = [
+            {
+                id: 1, name: "Elite Pro Series Boxing Gloves 16oz", category: "Boxing",
+                price: 2499, oldPrice: 3200, rating: 4.5, reviewsCount: 1245,
+                img: "assets/boxing_gloves.png", fallback: "https://via.placeholder.com/250/2c3947/ff5722",
+                desc: "Crafted with premium synthetic combat leather. Features multi-density foam for ultimate impact absorption and a moisture-wicking inner lining to keep your hands dry during heavy sparring and bag work.",
+                reviews: [
+                    { user: "Rahul S.", stars: 5, text: "Excellent gloves! The wrist support is rigid and secure. Best for heavy bag sessions." },
+                    { user: "Arjun K.", stars: 4, text: "Padding is dense, took a few days to break them in but they feel incredible now." }
+                ]
+            },
+            {
+                id: 2, name: "Kyokushin Heavyweight Tournament Gi", category: "Karate",
+                price: 3500, oldPrice: 4000, rating: 5, reviewsCount: 892,
+                img: "assets/karate_gi.png", fallback: "https://via.placeholder.com/250/2c3947/ff5722",
+                desc: "14oz brushed canvas 100% cotton uniform designed specifically for full-contact Kyokushin Karate. It provides maximum mobility with a stiff 'snap' sound during kata and strikes.",
+                reviews: [
+                    { user: "Sensei Vikram", stars: 5, text: "True heavyweight feel. The stitching holds up perfectly under intense grabbing and sweeping." },
+                    { user: "Suresh P.", stars: 5, text: "Washes well. Slight shrinkage but the fit is perfect for tournaments." }
+                ]
+            },
+            {
+                id: 3, name: "Titan Heavy Duty 100lb Banana Bag", category: "Muay Thai",
+                price: 4999, oldPrice: 6500, rating: 4.5, reviewsCount: 456,
+                img: "assets/punching_bag.png", fallback: "https://via.placeholder.com/250/2c3947/ff5722",
+                desc: "A full-length 6ft heavy bag perfect for throwing low kicks, knees, and heavy punches. Made of tear-resistant synthetic leather with reinforced nylon straps.",
+                reviews: [
+                    { user: "Nitin B.", stars: 5, text: "Solid piece of equipment for my home gym. Perfect density for conditioning shins." },
+                    { user: "Ajay G.", stars: 4, text: "Great bag, though it requires heavy duty ceiling mounts!" }
+                ]
+            },
+            {
+                id: 4, name: "WTF Approved Reversible Chest Protector", category: "Taekwondo",
+                price: 1800, oldPrice: 2200, rating: 4.5, reviewsCount: 567,
+                img: "assets/taekwondo_chest_guard.png", fallback: "https://via.placeholder.com/250/2c3947/ff5722",
+                desc: "World Taekwondo Federation approved Hogu. Reversible Blue/Red design, ergonomically shaped to absorb direct trauma from spinning hooks and roundhouse kicks.",
+                reviews: [
+                    { user: "Priya M.", stars: 5, text: "Very comfortable to wear and the ties on the back are strong. Absorbs impact brilliantly." },
+                    { user: "Rohan D.", stars: 4, text: "Got this for my son's competition, perfectly fits regulations." }
+                ]
+            },
+            {
+                id: 5, name: "Premium Onyx BJJ Gi (Thick Weave)", category: "Jiu-Jitsu",
+                price: 4500, oldPrice: 5200, rating: 5, reviewsCount: 1120,
+                img: "assets/bjj_gi.png", fallback: "https://via.placeholder.com/250/2c3947/ff5722",
+                desc: "450 GSM Pearl weave jacket with 10oz ripstop pants. Unrivaled durability combined with an aesthetic dark style optimized for intense ground grappling and rolling.",
+                reviews: [
+                    { user: "Kabir S.", stars: 5, text: "Osss! By far my favorite Gi for open mat. Very hard for opponents to maintain grips on this fabric." },
+                    { user: "Deepak L.", stars: 5, text: "Fits beautifully. The reinforced knees on the pants are a lifesaver." }
+                ]
+            },
+            {
+                id: 6, name: "Apex Phantom Series MMA Fight Shorts", category: "MMA",
+                price: 1500, oldPrice: null, rating: 4, reviewsCount: 312,
+                img: "assets/mma_shorts.png", fallback: "https://via.placeholder.com/250/2c3947/ff5722",
+                desc: "4-way stretch fabric with split side seams for unrestricted high kicks and submissions. Includes a hidden interior pocket for mouthguards.",
+                reviews: [
+                    { user: "Rocky M.", stars: 4, text: "Very flexible and light. The velcro closure feels very secure." },
+                    { user: "Faisal K.", stars: 4, text: "Looks great, fits well. A bit tight around the waist initially." }
+                ]
+            },
+            {
+                id: 7, name: "Traditional Octagonal Wooden Nunchaku", category: "Kung Fu",
+                price: 699, oldPrice: 850, rating: 4.5, reviewsCount: 410,
+                img: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Nunchaku.JPG", fallback: "https://via.placeholder.com/250/2c3947/ff5722",
+                desc: "Classic Bruce Lee style hardwood nunchaku with steel swivel chain. Designed for martial arts demonstrations and speed training.",
+                reviews: [
+                    { user: "Aman Y.", stars: 5, text: "The chain swivel is incredibly smooth. The weight distribution is spot on for advanced tricks." },
+                    { user: "Sid V.", stars: 4, text: "Good solid wood. Might hurt if you're a beginner!" }
+                ]
+            },
+            {
+                id: 8, name: "Pro Muay Thai Focus Pads & Mitts", category: "Muay Thai",
+                price: 2100, oldPrice: 2800, rating: 5, reviewsCount: 845,
+                img: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Focus_pad.jpg", fallback: "https://via.placeholder.com/250/2c3947/ff5722",
+                desc: "Essential for trainer/coach setup. Curved design to catch punches, elbows, and knees perfectly without straining the holder's wrists.",
+                reviews: [
+                    { user: "Coach Ryan", stars: 5, text: "My wrists no longer hurt holding pads for heavy hitters. Outstanding shock absorption." },
+                    { user: "Tarun G.", stars: 5, text: "Genuine leather feel, very ergonomic." }
+                ]
+            },
+            {
+                id: 9, name: "Feiyue Canvas Martial Arts Shoes", category: "Kung Fu",
+                price: 999, oldPrice: null, rating: 4.5, reviewsCount: 3245,
+                img: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500&q=80", fallback: "https://via.placeholder.com/250/2c3947/ff5722?text=Shoes",
+                desc: "The classic Wushu/Kung Fu choice. A highly flexible rubber sole providing maximum floor feel for precise footwork.",
+                reviews: [
+                    { user: "Jet L.", stars: 5, text: "The best shoes for Wushu. Lightweight and they grip the training mat perfectly." }
+                ]
+            },
+            {
+                id: 10, name: "High Density Impact Mat for Recovery", category: "Fitness",
+                price: 899, oldPrice: null, rating: 4, reviewsCount: 123,
+                img: "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=500&q=80", fallback: "https://via.placeholder.com/250/2c3947/ff5722?text=Mat",
+                desc: "Extra thick 15mm NBR foam mat. Ideal for post-training stretching, yoga, and rehab exercises for sore joints.",
+                reviews: [
+                    { user: "Neha R.", stars: 4, text: "Saves my knees when doing floor stretches after a harsh session." }
+                ]
+            }
+        ];
+
+        let cart = [];
+
+        // DOM Elements
+        const productGrid = document.getElementById('productGrid');
+        const searchInput = document.getElementById('searchInput');
+        const categoryItems = document.querySelectorAll('.category-item');
+        const noResults = document.getElementById('no-results');
+        const sectionTitleText = document.getElementById('section-title-text');
+
+        const cartIcon = document.getElementById('cart-icon');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const closeCart = document.getElementById('closeCart');
+        const cartItemsContainer = document.getElementById('cartItems');
+        const cartTotalEl = document.getElementById('cartTotal');
+        const cartBadge = document.getElementById('cart-badge');
+
+        const regModal = document.getElementById('registration-modal');
+        const productModal = document.getElementById('product-modal');
+        const navUserName = document.getElementById('nav-user-name');
+
+        // Render Star Ratings Helper
+        function getStarsHTML(rating, count) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                if (rating >= i) html += '<i class="fa-solid fa-star"></i>';
+                else if (rating >= i - 0.5) html += '<i class="fa-solid fa-star-half-stroke"></i>';
+                else html += '<i class="fa-regular fa-star"></i>';
+            }
+            if (count) html += ` <span>(${count} reviews)</span>`;
+            return html;
+        }
+
+        // Render Products
+        function renderProducts(items) {
+            productGrid.innerHTML = '';
+            if (items.length === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+                items.forEach(p => {
+                    let priceHtml = `<div class="product-price">₹${p.price.toLocaleString('en-IN')}</div>`;
+                    if (p.oldPrice) {
+                        const discount = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+                        priceHtml += `
+                            <div class="old-price">₹${p.oldPrice.toLocaleString('en-IN')}</div>
+                            <div class="discount-badge" style="background:rgba(76,175,80,0.1);color:#4caf50;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:bold;">${discount}% OFF</div>`;
+                    }
+
+                    productGrid.innerHTML += `
+                        <div class="product-card" onclick="openProductModal(${p.id})">
+                            <button class="wishlist-btn" onclick="toggleWishlist(this, event)"><i class="fa-regular fa-heart"></i></button>
+                            <div class="product-image-container">
+                                <img src="${p.img}" alt="${p.name}" onerror="this.src='${p.fallback}'">
+                            </div>
+                            <div class="product-details">
+                                <div class="product-category">${p.category}</div>
+                                <h3 class="product-title">${p.name}</h3>
+                                <div class="product-rating">${getStarsHTML(p.rating, p.reviewsCount)}</div>
+                                <div class="product-price-row">${priceHtml}</div>
+                                <button class="add-to-cart" onclick="addToCart(event, ${p.id}, this)">
+                                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // Search & Filter
+        function filterProducts(category) {
+            let filtered = products;
+            if (category !== 'All') {
+                filtered = products.filter(p => p.category === category);
+                sectionTitleText.innerText = `${category} Gear`;
+            } else {
+                sectionTitleText.innerText = `Trending Martial Arts Gear`;
+            }
+            renderProducts(filtered);
+        }
+
+        categoryItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                categoryItems.forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                searchInput.value = '';
+                filterProducts(e.target.dataset.category);
+            });
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            categoryItems.forEach(c => c.classList.remove('active'));
+            const searched = products.filter(p =>
+                p.name.toLowerCase().includes(term) || p.category.toLowerCase().includes(term)
+            );
+            sectionTitleText.innerText = term ? `Search Results for "${term}"` : `Trending Martial Arts Gear`;
+            renderProducts(searched);
+        });
+
+        // Cartesian Logic
+        window.addToCart = function (e, productId, btnNode) {
+            if (e) e.stopPropagation(); // prevent modal from opening
+            const product = products.find(p => p.id === productId);
+            cart.push(product);
+            updateCart();
+            cartSidebar.classList.add('active');
+
+            if (btnNode) {
+                btnNode.innerHTML = '<i class="fa-solid fa-check"></i> Added';
+                btnNode.style.backgroundColor = 'var(--success-color)';
+                btnNode.style.borderColor = 'var(--success-color)';
+                btnNode.style.color = 'white';
+                setTimeout(() => {
+                    btnNode.innerHTML = '<i class="fa-solid fa-cart-plus"></i> Add to Cart';
+                    btnNode.style.backgroundColor = '';
+                    btnNode.style.borderColor = '';
+                    btnNode.style.color = '';
+                }, 1500);
+            }
+        }
+
+        window.removeFromCart = function (index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function updateCart() {
+            cartBadge.innerText = cart.length;
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="color:var(--text-light); text-align:center; margin-top:50px;">Your cart is empty.</p>';
+            }
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartItemsContainer.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.img}" onerror="this.src='${item.fallback}'">
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">₹${item.price.toLocaleString('en-IN')}</div>
+                        </div>
+                        <i class="fa-solid fa-trash remove-item" onclick="removeFromCart(${index})"></i>
+                    </div>
+                `;
+            });
+            cartTotalEl.innerText = `₹${total.toLocaleString('en-IN')}`;
+        }
+
+        cartIcon.addEventListener('click', () => { cartSidebar.classList.add('active'); });
+        closeCart.addEventListener('click', () => { cartSidebar.classList.remove('active'); });
+
+        window.toggleWishlist = function (btn, event) {
+            if (event) event.stopPropagation();
+            const icon = btn.querySelector('i');
+            if (icon.classList.contains('fa-regular')) {
+                icon.classList.replace('fa-regular', 'fa-solid');
+                icon.style.color = '#ff3366';
+            } else {
+                icon.classList.replace('fa-solid', 'fa-regular');
+                icon.style.color = '';
+            }
+        }
+
+        // Product Details Modal Logic
+        window.openProductModal = function (id) {
+            const p = products.find(prod => prod.id === id);
+
+            // Populate data
+            document.getElementById('pm-img').src = p.img;
+            document.getElementById('pm-img').onerror = () => document.getElementById('pm-img').src = p.fallback;
+            document.getElementById('pm-cat').innerText = p.category;
+            document.getElementById('pm-title').innerText = p.name;
+            document.getElementById('pm-stars').innerHTML = getStarsHTML(p.rating, p.reviewsCount);
+            document.getElementById('pm-price').innerText = `₹${p.price.toLocaleString('en-IN')}`;
+
+            const oldEl = document.getElementById('pm-old');
+            if (p.oldPrice) {
+                oldEl.style.display = 'block';
+                oldEl.innerText = `₹${p.oldPrice.toLocaleString('en-IN')}`;
+            } else {
+                oldEl.style.display = 'none';
+            }
+
+            document.getElementById('pm-desc').innerText = p.desc;
+
+            // Populate Reviews
+            const reviewsCont = document.getElementById('pm-reviews-container');
+            reviewsCont.innerHTML = '';
+            p.reviews.forEach(r => {
+                reviewsCont.innerHTML += `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="reviewer-name">${r.user}</span>
+                            <span class="review-stars">${getStarsHTML(r.stars, 0)}</span>
+                        </div>
+                        <div class="review-text">"${r.text}"</div>
+                    </div>
+                `;
+            });
+
+            // Update Add to Cart Button Action
+            const addBtn = document.getElementById('pm-btn-add');
+            addBtn.onclick = function () {
+                addToCart(null, p.id, addBtn);
+            };
+
+            // Show modal with animation
+            productModal.classList.add('active');
+        }
+
+        window.toggleModalWish = function (btn) {
+            const icon = btn.querySelector('i');
+            if (icon.classList.contains('fa-regular')) {
+                icon.classList.replace('fa-regular', 'fa-solid');
+                btn.style.color = '#ff3366';
+                btn.style.borderColor = '#ff3366';
+                btn.innerHTML = '<i class="fa-solid fa-heart"></i> Wishlisted';
+            } else {
+                icon.classList.replace('fa-solid', 'fa-regular');
+                btn.style.color = 'var(--text-white)';
+                btn.style.borderColor = 'var(--border-color)';
+                btn.innerHTML = '<i class="fa-regular fa-heart"></i> Add to Wishlist';
+            }
+        }
+
+        window.closeModal = function (modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Login / Registration Setup
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts(products);
+            const currentUser = localStorage.getItem('currentUser') || 'guest';
+            const userKey = `martialMartUser_${currentUser}`;
+
+            const storedUser = localStorage.getItem(userKey);
+            if (!storedUser) {
+                setTimeout(() => regModal.classList.add('active'), 500);
+            } else {
+                navUserName.textContent = JSON.parse(storedUser).fname;
+            }
+
+            document.getElementById('user-details-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const userData = {
+                    fname: document.getElementById('fname').value,
+                    lname: document.getElementById('lname').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    pincode: document.getElementById('pincode').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                };
+                const currentUser = localStorage.getItem('currentUser') || 'guest';
+                const userKey = `martialMartUser_${currentUser}`;
+                localStorage.setItem(userKey, JSON.stringify(userData));
+                navUserName.textContent = userData.fname;
+                regModal.classList.remove('active');
+            });
+
+            document.getElementById('user-profile-btn').addEventListener('click', () => {
+                const currentUser = localStorage.getItem('currentUser') || 'guest';
+                const userKey = `martialMartUser_${currentUser}`;
+                const storedUser = localStorage.getItem(userKey);
+                if (storedUser) {
+                    const ud = JSON.parse(storedUser);
+                    document.getElementById('fname').value = ud.fname || '';
+                    document.getElementById('lname').value = ud.lname || '';
+                    document.getElementById('phone').value = ud.phone || '';
+                    document.getElementById('address').value = ud.address || '';
+                    document.getElementById('pincode').value = ud.pincode || '';
+                    document.getElementById('city').value = ud.city || '';
+                    document.getElementById('state').value = ud.state || '';
+                }
+                regModal.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
