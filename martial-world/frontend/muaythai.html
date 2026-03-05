@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Muay Thai Progress Tracker</title>
   <style>
     body {
@@ -26,7 +27,11 @@
       padding: 2rem;
     }
 
-    select, input[type="checkbox"], input[type="number"], button, textarea {
+    select,
+    input[type="checkbox"],
+    input[type="number"],
+    button,
+    textarea {
       background: #222;
       color: #fff;
       border: 1px solid #444;
@@ -49,7 +54,7 @@
       background: #1a1a1a;
       padding: 1rem;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
     .month h3 {
@@ -121,6 +126,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>Muay Thai Progress Tracker</header>
 
@@ -178,6 +184,7 @@
     };
 
     function updateSyllabus() {
+      const currentUser = localStorage.getItem('currentUser') || 'guest';
       const stage = document.getElementById("stage").value;
       const content = document.getElementById("stageContent");
       const guide = document.getElementById("syllabusText");
@@ -210,7 +217,7 @@
           dayDiv.innerHTML = `<h4>Day ${day}</h4>`;
 
           data.goals.forEach((goal, goalIndex) => {
-            const checkboxId = `${stage}-${monthIndex}-day${day}-goal${goalIndex}`;
+            const checkboxId = `${currentUser}-${stage}-${monthIndex}-day${day}-goal${goalIndex}`;
             const isChecked = localStorage.getItem(checkboxId) === "true";
 
             if (isChecked) completedGoals++;
@@ -243,7 +250,7 @@
             dayDiv.appendChild(exerciseDiv);
           });
 
-          const noteId = `${stage}-${monthIndex}-day${day}-note`;
+          const noteId = `${currentUser}-${stage}-${monthIndex}-day${day}-note`;
           const savedNote = localStorage.getItem(noteId) || "";
           const notesDiv = document.createElement("div");
           notesDiv.className = "notes";
@@ -308,4 +315,5 @@
     updateSyllabus(); // Load default on page load
   </script>
 </body>
+
 </html>
